@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Endpoint Security Dashboard</title>
+  <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+  <header>
+    <h1>Endpoint Security Dashboard</h1>
+    <span class="note">Sample data</span>
+  </header>
+
+  <main>
+    <section class="tiles">
+      <div class="card">
+        <h2>Total endpoints</h2>
+        <p class="big" id="total">–</p>
+        <p>Online: <strong id="online">–</strong> · Offline: <strong id="offline">–</strong></p>
+      </div>
+      <div class="card">
+        <h2>Antivirus coverage</h2>
+        <p class="big" id="av">–</p>
+        <p id="av-attention"></p>
+      </div>
+    </section>
+
+    <section class="card">
+      <h2>Patch compliance</h2>
+      <div id="patches"></div>
+      <p class="warn" id="patch-warning"></p>
+    </section>
+
+    <section class="card">
+      <h2>Suspicious process executions (last 24h)</h2>
+      <table>
+        <thead><tr><th>Time</th><th>Host</th><th>Command line</th><th>Why flagged</th></tr></thead>
+        <tbody id="processes"></tbody>
+      </table>
+    </section>
+
+    <section class="card">
+      <h2>Unauthorized software</h2>
+      <ul id="software"></ul>
+    </section>
+  </main>
+
+  <script src="/static/app.js"></script>
+</body>
+</html>
