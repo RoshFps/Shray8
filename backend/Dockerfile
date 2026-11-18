@@ -1,7 +1,9 @@
 # Recipe for the backend container image.
 
 # Start from a small official Python image.
-FROM python:3.12-slim
+FROM python:3.12.15-slim-trixie
+
+ENV PYTHONDONTWRITEBYTECODE=1 PYTHONUNBUFFERED=1
 
 # Everything below happens inside /app in the container.
 WORKDIR /app
@@ -15,8 +17,12 @@ RUN pip install --no-cache-dir -r requirements.txt
 COPY app ./app
 
 # Run as a normal user instead of root (good security habit).
-RUN useradd --create-home appuser
+RUN useradd --create-home appuser \
+ && mkdir /data && chown appuser /data
 USER appuser
+
+# SQLite database lives here; compose mounts a volume on it so data survives restarts.
+ENV DB_PATH=/data/esd.db
 
 EXPOSE 8000
 
