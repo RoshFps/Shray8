@@ -68,5 +68,15 @@ async function loadSoftware() {
   }
 }
 
-Promise.all([loadSummary(), loadPatches(), loadProcesses(), loadSoftware()])
-  .catch((err) => console.error("Failed to load dashboard data:", err));
+async function refresh() {
+  try {
+    await Promise.all([loadSummary(), loadPatches(), loadProcesses(), loadSoftware()]);
+    document.getElementById("updated").textContent = `Live · updated ${new Date().toLocaleTimeString()}`;
+  } catch (err) {
+    console.error("Failed to load dashboard data:", err);
+    document.getElementById("updated").textContent = "Disconnected";
+  }
+}
+
+refresh();
+setInterval(refresh, 10000);

@@ -1,0 +1,31 @@
+# Caddy terminates HTTPS and asks for a login before anything reaches the backend.
+# Settings come from .env (see .env.example).
+{$SITE_ADDRESS:localhost} {
+	# "internal" = Caddy's own private CA (homelab). For a public domain set
+	# TLS_MODE to your email address and Caddy gets a Let's Encrypt certificate.
+	tls {$TLS_MODE:internal}
+
+	encode zstd gzip
+
+	header {
+		Strict-Transport-Security "max-age=31536000"
+		X-Content-Type-Options nosniff
+		X-Frame-Options DENY
+		Referrer-Policy no-referrer
+		Content-Security-Policy "default-src 'self'; img-src 'self' data:; frame-ancestors 'none'"
+		-Server
+	}
+
+	# Collectors reach the backend directly over the internal Docker networks.
+	# The ingest endpoint is never served to the outside.
+	handle /api/ingest {
+		respond 404
+	}
+
+	handle {
+		basic_auth {
+			{$DASHBOARD_USER} {$DASHBOARD_PASSWORD_HASH}
+		}
+		reverse_proxy backend:8000
+	}
+}
